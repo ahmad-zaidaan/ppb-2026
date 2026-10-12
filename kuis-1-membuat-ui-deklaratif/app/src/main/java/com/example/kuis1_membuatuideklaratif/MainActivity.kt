@@ -29,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Search
@@ -69,11 +68,11 @@ import androidx.compose.ui.unit.sp
 import com.example.kuis1_membuatuideklaratif.ui.theme.Kuis1MembuatUIDeklaratifTheme
 import kotlinx.coroutines.delay
 
-data class Student(
+data class Mahasiswa(
     val id: Int,
-    val name: String,
+    val nama: String,
     val nrp: String,
-    val major: String
+    val prodi: String
 )
 
 class MainActivity : ComponentActivity() {
@@ -150,23 +149,23 @@ fun SplashScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentManagerScreen() {
-    val students = remember {
+    val mahasiswa = remember {
         mutableStateListOf(
-            Student(1, "Budi Santoso", "2301001", "Informatika"),
-            Student(2, "Siti Aminah", "2301002", "Sistem Informasi"),
-            Student(3, "Andi Wijaya", "2301003", "Teknik Komputer")
+            Mahasiswa(1, "Budi Santoso", "5053250067", "RPL"),
+            Mahasiswa(2, "Mamat Sosmart", "5053256767", "RPL"),
+            Mahasiswa(3, "Wowo Sawit", "5053259999", "RPL")
         )
     }
 
     var searchQuery by remember { mutableStateOf("") }
     var showAddDialog by remember { mutableStateOf(false) }
-    var editingStudent by remember { mutableStateOf<Student?>(null) }
-    var deletingStudent by remember { mutableStateOf<Student?>(null) }
+    var editingStudent by remember { mutableStateOf<Mahasiswa?>(null) }
+    var deletingStudent by remember { mutableStateOf<Mahasiswa?>(null) }
 
-    val filteredStudents = students.filter {
-        it.name.contains(searchQuery, ignoreCase = true) ||
+    val filteredStudents = mahasiswa.filter {
+        it.nama.contains(searchQuery, ignoreCase = true) ||
                 it.nrp.contains(searchQuery, ignoreCase = true) ||
-                it.major.contains(searchQuery, ignoreCase = true)
+                it.prodi.contains(searchQuery, ignoreCase = true)
     }
 
     Scaffold(
@@ -281,13 +280,13 @@ fun StudentManagerScreen() {
     if (showAddDialog) {
         StudentFormDialog(
             title = "Tambah Mahasiswa",
-            initialName = "",
+            initialNama = "",
             initialNrp = "",
-            initialMajor = "",
+            initialProdi = "",
             onDismiss = { showAddDialog = false },
-            onConfirm = { name, nrp, major ->
-                val newId = (students.maxOfOrNull { it.id } ?: 0) + 1
-                students.add(Student(newId, name, nrp, major))
+            onConfirm = { nama, nrp, prodi ->
+                val newId = (mahasiswa.maxOfOrNull { it.id } ?: 0) + 1
+                mahasiswa.add(Mahasiswa(newId, nama, nrp, prodi))
                 showAddDialog = false
             }
         )
@@ -296,14 +295,14 @@ fun StudentManagerScreen() {
     editingStudent?.let { student ->
         StudentFormDialog(
             title = "Edit Mahasiswa",
-            initialName = student.name,
+            initialNama = student.nama,
             initialNrp = student.nrp,
-            initialMajor = student.major,
+            initialProdi = student.prodi,
             onDismiss = { editingStudent = null },
-            onConfirm = { name, nrp, major ->
-                val index = students.indexOfFirst { it.id == student.id }
+            onConfirm = { nama, nrp, prodi ->
+                val index = mahasiswa.indexOfFirst { it.id == student.id }
                 if (index != -1) {
-                    students[index] = student.copy(name = name, nrp = nrp, major = major)
+                    mahasiswa[index] = student.copy(nama = nama, nrp = nrp, prodi = prodi)
                 }
                 editingStudent = null
             }
@@ -317,12 +316,12 @@ fun StudentManagerScreen() {
                 Text(text = "Hapus Mahasiswa", fontWeight = FontWeight.Bold)
             },
             text = {
-                Text("Apakah Anda yakin ingin menghapus data ${student.name}?")
+                Text("Apakah Anda yakin ingin menghapus data ${student.nama}?")
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        students.removeAll { it.id == student.id }
+                        mahasiswa.removeAll { it.id == student.id }
                         deletingStudent = null
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626))
@@ -341,7 +340,7 @@ fun StudentManagerScreen() {
 
 @Composable
 fun StudentItemCard(
-    student: Student,
+    student: Mahasiswa,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -377,7 +376,7 @@ fun StudentItemCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = student.name,
+                    text = student.nama,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1E293B)
@@ -389,7 +388,7 @@ fun StudentItemCard(
                     color = Color(0xFF64748B)
                 )
                 Text(
-                    text = student.major,
+                    text = student.prodi,
                     fontSize = 13.sp,
                     color = Color(0xFF64748B)
                 )
@@ -419,15 +418,15 @@ fun StudentItemCard(
 @Composable
 fun StudentFormDialog(
     title: String,
-    initialName: String,
+    initialNama: String,
     initialNrp: String,
-    initialMajor: String,
+    initialProdi: String,
     onDismiss: () -> Unit,
-    onConfirm: (name: String, nrp: String, major: String) -> Unit
+    onConfirm: (nama: String, nrp: String, prodi: String) -> Unit
 ) {
-    var name by remember { mutableStateOf(initialName) }
+    var nama by remember { mutableStateOf(initialNama) }
     var nrp by remember { mutableStateOf(initialNrp) }
-    var major by remember { mutableStateOf(initialMajor) }
+    var prodi by remember { mutableStateOf(initialProdi) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -435,8 +434,8 @@ fun StudentFormDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
+                    value = nama,
+                    onValueChange = { nama = it },
                     label = { Text("Nama Mahasiswa") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -455,8 +454,8 @@ fun StudentFormDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    value = major,
-                    onValueChange = { major = it },
+                    value = prodi,
+                    onValueChange = { prodi = it },
                     label = { Text("Program Studi / Jurusan") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -466,8 +465,8 @@ fun StudentFormDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    if (name.isNotBlank() && nrp.isNotBlank()) {
-                        onConfirm(name.trim(), nrp.trim(), major.trim())
+                    if (nama.isNotBlank() && nrp.isNotBlank()) {
+                        onConfirm(nama.trim(), nrp.trim(), prodi.trim())
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1877F2))
