@@ -53,53 +53,53 @@ data class Member(
     val id: Int,
     val fullName: String,
     val idNumber: String,
-    val studyProgram: String,
+    val programStudi: String,
     val address: String,
     val phoneNumber: String,
     val email: String,
-    val membershipType: String
+    val role: String
 )
 
 val dummyMembers = listOf(
     Member(
         id = 1,
         fullName = "Andi Pratama",
-        idNumber = "2301001",
-        studyProgram = "Informatika",
+        idNumber = "5053251001",
+        programStudi = "Informatika",
         address = "Jl. Teknik Komputer No. 12, Surabaya",
         phoneNumber = "081234567890",
         email = "andi.pratama@mhs.ac.id",
-        membershipType = "Mahasiswa"
+        role = "Mahasiswa"
     ),
     Member(
         id = 2,
         fullName = "Siti Aisyah",
-        idNumber = "2301002",
-        studyProgram = "Sistem Informasi",
+        idNumber = "5053251002",
+        programStudi = "Sistem Informasi",
         address = "Jl. Gebang Wetan No. 45, Surabaya",
         phoneNumber = "081298765432",
         email = "siti.aisyah@mhs.ac.id",
-        membershipType = "Mahasiswa"
+        role = "Mahasiswa"
     ),
     Member(
         id = 3,
         fullName = "Budi Santoso",
         idNumber = "198501001",
-        studyProgram = "Teknik Elektro",
+        programStudi = "Teknik Elektro",
         address = "Jl. Manyar Sabrangan No. 8, Surabaya",
         phoneNumber = "085712345678",
         email = "budi.santoso@staff.ac.id",
-        membershipType = "Dosen"
+        role = "Dosen"
     ),
     Member(
         id = 4,
         fullName = "Rina Lestari",
-        idNumber = "2301003",
-        studyProgram = "Teknik Komputer",
+        idNumber = "5053251003",
+        programStudi = "Teknik Komputer",
         address = "Jl. Keputih Perintis No. 20, Surabaya",
         phoneNumber = "087811223344",
         email = "rina.lestari@mhs.ac.id",
-        membershipType = "Mahasiswa"
+        role = "Mahasiswa"
     )
 )
 
@@ -172,7 +172,8 @@ fun LibraryRegApp() {
                     RegistrationScreen(
                         isEditing = isEditMode,
                         onSubmit = {
-                            snackbarMessage = if (isEditMode) "Perubahan data berhasil disimpan" else "Pendaftaran anggota baru berhasil"
+                            snackbarMessage =
+                                if (isEditMode) "Perubahan data berhasil disimpan" else "Pendaftaran anggota baru berhasil"
                             showSuccessSnackbar = true
                             currentScreen = ScreenState.MEMBER_LIST
                         }
@@ -229,7 +230,8 @@ fun LibraryRegApp() {
                         Button(
                             onClick = {
                                 showDeleteConfirmDialog = false
-                                snackbarMessage = "Anggota ${memberToDelete?.fullName ?: ""} berhasil dihapus"
+                                snackbarMessage =
+                                    "Anggota ${memberToDelete?.fullName ?: ""} berhasil dihapus"
                                 showSuccessSnackbar = true
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = DangerRed),
@@ -322,11 +324,11 @@ fun RegistrationScreen(
 ) {
     var fullName by remember { mutableStateOf(if (isEditing) "Andi Pratama" else "") }
     var idNumber by remember { mutableStateOf(if (isEditing) "2301001" else "") }
-    var studyProgram by remember { mutableStateOf(if (isEditing) "Informatika" else "") }
+    var programStudi by remember { mutableStateOf(if (isEditing) "Informatika" else "") }
     var address by remember { mutableStateOf(if (isEditing) "Jl. Teknik Komputer No. 12, Surabaya" else "") }
     var phoneNumber by remember { mutableStateOf(if (isEditing) "081234567890" else "") }
     var email by remember { mutableStateOf(if (isEditing) "andi.pratama@mhs.ac.id" else "") }
-    var membershipType by remember { mutableStateOf("Mahasiswa") }
+    var role by remember { mutableStateOf("Mahasiswa") }
 
     var studyProgramExpanded by remember { mutableStateOf(false) }
     var membershipTypeExpanded by remember { mutableStateOf(false) }
@@ -443,8 +445,8 @@ fun RegistrationScreen(
                 onExpandedChange = { studyProgramExpanded = !studyProgramExpanded }
             ) {
                 OutlinedTextField(
-                    value = studyProgram,
-                    onValueChange = { studyProgram = it },
+                    value = programStudi,
+                    onValueChange = { programStudi = it },
                     label = { Text("Program Studi / Unit") },
                     placeholder = { Text("Pilih Program Studi") },
                     trailingIcon = {
@@ -467,7 +469,7 @@ fun RegistrationScreen(
                         DropdownMenuItem(
                             text = { Text(option, fontSize = 13.sp, color = ContentPrimary) },
                             onClick = {
-                                studyProgram = option
+                                programStudi = option
                                 studyProgramExpanded = false
                             }
                         )
@@ -524,7 +526,7 @@ fun RegistrationScreen(
                 onExpandedChange = { membershipTypeExpanded = !membershipTypeExpanded }
             ) {
                 OutlinedTextField(
-                    value = membershipType,
+                    value = role,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Jenis Keanggotaan") },
@@ -547,7 +549,7 @@ fun RegistrationScreen(
                         DropdownMenuItem(
                             text = { Text(option, fontSize = 13.sp, color = ContentPrimary) },
                             onClick = {
-                                membershipType = option
+                                role = option
                                 membershipTypeExpanded = false
                             }
                         )
@@ -593,7 +595,7 @@ fun MemberListScreen(
         members.filter {
             it.fullName.contains(query, ignoreCase = true) ||
                     it.idNumber.contains(query, ignoreCase = true) ||
-                    it.studyProgram.contains(query, ignoreCase = true)
+                    it.programStudi.contains(query, ignoreCase = true)
         }
     }
 
@@ -747,7 +749,7 @@ fun MemberRowItem(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Surface(
-                        color = when (member.membershipType) {
+                        color = when (member.role) {
                             "Dosen" -> Color(0xFFFBF3DB)
                             "Mahasiswa" -> Color(0xFFEDF3EC)
                             else -> BadgeBg
@@ -755,10 +757,10 @@ fun MemberRowItem(
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
-                            text = member.membershipType,
+                            text = member.role,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium,
-                            color = when (member.membershipType) {
+                            color = when (member.role) {
                                 "Dosen" -> Color(0xFF8F6B00)
                                 "Mahasiswa" -> Color(0xFF2B593F)
                                 else -> BadgeText
@@ -864,7 +866,7 @@ fun MemberDetailDialog(
                             shape = RoundedCornerShape(4.dp)
                         ) {
                             Text(
-                                text = "${member.studyProgram} • ${member.membershipType}",
+                                text = "${member.programStudi} • ${member.role}",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = BrandBlue,
